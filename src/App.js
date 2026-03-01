@@ -24,6 +24,7 @@ function App() {
       axios.defaults.headers.common['x-family-password'] = authToken;
       fetchFamily();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [centerId, viewMode, authToken]); 
 
   const handleLogin = async (e) => {
