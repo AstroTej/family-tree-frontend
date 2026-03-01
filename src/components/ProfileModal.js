@@ -42,13 +42,23 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
     if (imageFile) data.append('image', imageFile);
 
     try {
+      const authToken = axios.defaults.headers.common['x-family-password'];
+      
       if (isNewPerson) {
-        await axios.post('http://localhost:5000/api/family', data, {
-          headers: { 'Content-Type': 'multipart/form-data' }
+        // UPDATE 1: The POST request (Adding a person)
+        await axios.post('https://family-tree-api-crb8.onrender.com/api/family', data, {
+          headers: { 
+            'Content-Type': 'multipart/form-data',
+            'x-family-password': authToken 
+          }
         });
       } else {
-        await axios.put(`http://localhost:5000/api/family/${person._id}`, data, {
-          headers: { 'Content-Type': 'multipart/form-data' }
+        // UPDATE 2: The PUT request (Editing a person)
+        await axios.put(`https://family-tree-api-crb8.onrender.com/api/family/${person._id}`, data, {
+          headers: { 
+            'Content-Type': 'multipart/form-data',
+            'x-family-password': authToken 
+          }
         });
       }
       refreshData(); 
