@@ -1,0 +1,114 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: #fff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 450px;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #888;
+  }
+  
+  .close-btn:hover {
+    color: #333;
+  }
+  
+  .profile-view {
+    text-align: center;
+  }
+  
+  .profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #3498db;
+    margin-bottom: 1rem;
+  }
+  
+  .profile-view h2 {
+    margin: 0 0 0.5rem;
+    color: #2c3e50;
+  }
+  
+  .profile-view p {
+    margin: 0.3rem 0;
+    color: #555;
+  }
+  
+  .edit-btn, .save-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    width: 100%;
+    transition: background 0.3s;
+  }
+  
+  .edit-btn:hover, .save-btn:hover {
+    background-color: #2980b9;
+  }
+  
+  .profile-form .form-group {
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+  
+  .profile-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+    color: #444;
+  }
+  
+  .profile-form input[type="text"],
+  .profile-form input[type="date"],
+  .profile-form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 1.5rem;
+  }
+  
+  .form-actions button[type="button"] {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    flex: 1;
+  }

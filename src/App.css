@@ -1,0 +1,84 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  body {
+    margin: 0;
+    background-color: #f4f7f6;
+    color: #333;
+  }
+  
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+  }
+  
+  .top-bar h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #2c3e50;
+  }
+  
+  .search-filter {
+    padding: 0.6rem 1rem;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+  }
+  
+  .search-filter:focus {
+    border-color: #3498db;
+  }
+  
+  .search-results {
+    background: white;
+    margin: 1rem auto;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+  }
+  
+  .search-results div {
+    padding: 0.8rem;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+  }
+  
+  .search-results div:hover {
+    background-color: #f9f9f9;
+  }
+  
+  #treeWrapper {
+    flex-grow: 1;
+    background-color: #eef2f5;
+  }
+  
+  /* Customizing the d3-tree nodes */
+  .rd3t-node {
+    cursor: pointer;
+  }
+  .rd3t-label__title {
+    fill: #2c3e50;
+    font-weight: bold;
+  }
+  .rd3t-link {
+    stroke: #bdc3c7;
+    stroke-width: 2px;
+  }
