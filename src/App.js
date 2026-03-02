@@ -10,6 +10,7 @@ function App() {
   const [userRole, setUserRole] = useState(localStorage.getItem('familyTreeRole') || null);
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [authToken, setAuthToken] = useState(localStorage.getItem('familyTreeAuth') || '');
 
   const [familyData, setFamilyData] = useState(null);
@@ -29,6 +30,9 @@ function App() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Turn on the loading spinner
+    setAuthError('');
+    
     try {
       // 1. Check which role this password belongs to
       const authRes = await axios.post('https://family-tree-api-crb8.onrender.com/api/auth', { password: passwordInput });
@@ -40,13 +44,18 @@ function App() {
       setAuthToken(passwordInput);
       setUserRole(role);
       setIsAuthenticated(true);
-      setAuthError('');
       
       // 3. Load the tree!
       axios.defaults.headers.common['x-family-password'] = passwordInput;
       fetchFamily();
     } catch (error) {
-      setAuthError('Incorrect password.');
+      if (error.response) {
+        setAuthError('Incorrect password.');
+      } else {
+        setAuthError('Network error. The server might still be waking up, try again in 30 seconds.');
+      }
+    } finally {
+      setIsLoading(false); // Turn off the loading spinner
     }
   };
 
@@ -86,8 +95,20 @@ function App() {
               required
             />
             {authError && <div style={{ color: '#e74c3c', fontSize: '0.85rem' }}>{authError}</div>}
-            <button type="submit" style={{ padding: '10px', background: '#3498db', color: 'white', border: 'none', borderRadius: '6px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' }}>
-              Unlock Tree
+            <button 
+              type="submit" 
+              disabled={isLoading}
+              style={{ 
+                padding: '10px', 
+                background: isLoading ? '#95a5a6' : '#3498db', 
+                color: 'white', 
+                border: 'none', 
+                borderRadius: '6px', 
+                fontSize: '1rem', 
+                cursor: isLoading ? 'not-allowed' : 'pointer', 
+                fontWeight: 'bold' 
+              }}>
+              {isLoading ? 'Waking Server... (Please wait ~50s)' : 'Unlock Tree'}
             </button>
           </form>
         </div>
