@@ -37,8 +37,8 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
       if (formData[key]) {
         data.append(key, formData[key]);
       } else if (['spouse', 'father', 'mother'].includes(key)) {
-        // Force the frontend to send the empty string so the backend knows to clear the relationship!
-        data.append(key, '');
+        // We use the magic word "NONE" so it survives the trip to the server
+        data.append(key, 'NONE');
       }
     });
 
@@ -218,4 +218,5 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
 };
 
 export default ProfileModal;
+
 
