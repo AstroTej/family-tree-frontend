@@ -6,12 +6,12 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
   const isNewPerson = !person;
   const [isEditing, setIsEditing] = useState(isNewPerson);
   
-  // Safely extract IDs if they are populated objects or just strings
   const extractId = (field) => field ? (field._id || field) : '';
 
   const [formData, setFormData] = useState({
     firstName: person?.firstName || '',
     lastName: person?.lastName || '',
+    postMaritalName: person?.postMaritalName || '',
     gender: person?.gender || '',
     dateOfBirth: person?.dateOfBirth ? person.dateOfBirth.split('T')[0] : '',
     dateOfDeath: person?.dateOfDeath ? person.dateOfDeath.split('T')[0] : '',
@@ -34,42 +34,53 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
     e.preventDefault();
     const data = new FormData();
     
-    // Append all text fields
     Object.keys(formData).forEach(key => {
       if (formData[key]) data.append(key, formData[key]);
     });
-
     if (imageFile) data.append('image', imageFile);
 
     try {
       const authToken = axios.defaults.headers.common['x-family-password'];
       
       if (isNewPerson) {
-        // UPDATE 1: The POST request (Adding a person)
         await axios.post('https://family-tree-api-crb8.onrender.com/api/family', data, {
-          headers: { 
-            'Content-Type': 'multipart/form-data',
-            'x-family-password': authToken 
-          }
+          headers: { 'Content-Type': 'multipart/form-data', 'x-family-password': authToken }
         });
       } else {
-        // UPDATE 2: The PUT request (Editing a person)
         await axios.put(`https://family-tree-api-crb8.onrender.com/api/family/${person._id}`, data, {
-          headers: { 
-            'Content-Type': 'multipart/form-data',
-            'x-family-password': authToken 
-          }
+          headers: { 'Content-Type': 'multipart/form-data', 'x-family-password': authToken }
         });
       }
       refreshData(); 
       onClose();     
     } catch (error) {
-      console.error("Error saving profile:", error);
-      alert("Failed to save profile. Check console for details.");
+      // DUPLICATE HANDLER
+      if (error.response && error.response.status === 409) {
+        alert("⚠️ This person already exists! A family member with this First Name, Last Name, and Father is already in the database.");
+      } else {
+        alert("Failed to save profile. Check console for details.");
+      }
     }
   };
 
-  // Helper to render the dropdowns without cluttering the JSX
+  // DELETE HANDLER (Double Confirmation)
+  const handleDelete = async () => {
+    if (window.confirm("Are you sure you want to delete this person?")) {
+      if (window.confirm("FINAL WARNING: This will permanently remove them and unlink their family connections. Proceed?")) {
+        try {
+          const authToken = axios.defaults.headers.common['x-family-password'];
+          await axios.delete(`https://family-tree-api-crb8.onrender.com/api/family/${person._id}`, {
+             headers: { 'x-family-password': authToken }
+          });
+          refreshData();
+          onClose();
+        } catch (error) {
+          alert("Failed to delete person.");
+        }
+      }
+    }
+  };
+
   const renderDropdown = (label, name, currentValue) => (
     <div className="form-group">
       <label>{label}:</label>
@@ -101,7 +112,7 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
                 <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} required />
               </div>
               <div className="form-group" style={{ flex: 1 }}>
-                <label>Last Name:</label>
+                <label>Last Name (Maiden/Birth):</label>
                 <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} required />
               </div>
             </div>
@@ -115,6 +126,14 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
                 <option value="Other">Other</option>
               </select>
             </div>
+
+            {/* DYNAMIC FIELD: Only shows if Female */}
+            {formData.gender === 'Female' && (
+              <div className="form-group">
+                <label>New Name (Post-Marital):</label>
+                <input type="text" name="postMaritalName" value={formData.postMaritalName} onChange={handleInputChange} placeholder="e.g., Jane Smith" />
+              </div>
+            )}
 
             {renderDropdown('Father', 'father', formData.father)}
             {renderDropdown('Mother', 'mother', formData.mother)}
@@ -147,11 +166,6 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
               <textarea name="bio" value={formData.bio} onChange={handleInputChange} rows="3" />
             </div>
 
-            <div className="form-group">
-              <label>Profile Picture:</label>
-              <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} />
-            </div>
-
             <div className="form-actions">
               <button type="submit" className="save-btn">Save Profile</button>
               {!isNewPerson && <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>}
@@ -159,12 +173,10 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
           </form>
         ) : (
           <div className="profile-view">
-            <img 
-              src={person.imageUrl ? `https://family-tree-api-crb8.onrender.com${person.imageUrl}` : '/default-avatar.png'}
-              alt={`${person.firstName} ${person.lastName}`} 
-              className="profile-image"
-            />
-            <h2>{person.firstName} {person.lastName}</h2>
+            <h2>
+              {person.firstName} {person.lastName} 
+              {person.postMaritalName && <span style={{ fontSize: '1rem', color: '#7f8c8d' }}> (Now: {person.postMaritalName})</span>}
+            </h2>
             {person.gender && <p style={{ fontStyle: 'italic', margin: '0 0 10px 0', color: '#7f8c8d' }}>{person.gender}</p>}
             
             <div style={{ background: '#f8f9fa', padding: '15px', borderRadius: '8px', textAlign: 'left', marginBottom: '15px' }}>
@@ -174,8 +186,9 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
               
               <hr style={{ border: '0', borderTop: '1px solid #ddd', margin: '10px 0' }}/>
               
-              <p><strong>DOB:</strong> {person.dateOfBirth ? new Date(person.dateOfBirth).toLocaleDateString() : 'N/A'}</p>
-              {person.dateOfDeath && <p><strong>Passed Away:</strong> {new Date(person.dateOfDeath).toLocaleDateString()}</p>}
+              {/* DD/MM/YYYY FORMATTING APPLIED HERE */}
+              <p><strong>DOB:</strong> {person.dateOfBirth ? new Date(person.dateOfBirth).toLocaleDateString('en-GB') : 'N/A'}</p>
+              {person.dateOfDeath && <p><strong>Passed Away:</strong> {new Date(person.dateOfDeath).toLocaleDateString('en-GB')}</p>}
               {person.location && <p><strong>Location:</strong> {person.location}</p>}
               {person.occupation && <p><strong>Occupation:</strong> {person.occupation}</p>}
             </div>
@@ -188,7 +201,10 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
             )}
             
             {userRole === 'edit' && (
-              <button className="edit-btn" onClick={() => setIsEditing(true)}>Edit Profile</button>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
+                <button className="edit-btn" style={{ flex: 2 }} onClick={() => setIsEditing(true)}>Edit Profile</button>
+                <button className="delete-btn" style={{ flex: 1, background: '#e74c3c', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }} onClick={handleDelete}>Delete</button>
+              </div>
             )}
           </div>
         )}
