@@ -152,8 +152,9 @@ function App() {
     }} title="Deceased" />
   );
 
-  const renderCustomNode = ({ nodeDatum }) => {
-    const { id, gender, isDeceased, spouseId, spouseName, spouseGender, spouseIsDeceased, age, spouseAge, isCenter, label, spouseLabel } = nodeDatum.attributes;
+const renderCustomNode = ({ nodeDatum }) => {
+    // 1. We extract ALL variables cleanly from the node attributes here
+    const { id, gender, isDeceased, spouseId, spouseName, spouseGender, spouseIsDeceased, age, spouseAge, isCenter, label, spouseLabel, location, postMaritalName, spouseLocation, spousePostMaritalName } = nodeDatum.attributes;
 
     const primaryStyle = getCardStyle(gender, isCenter);
     const spouseStyle = getCardStyle(spouseGender, isCenter);
@@ -165,14 +166,17 @@ function App() {
       <foreignObject width={containerWidth} height="200" x={containerX} y="-20">
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', height: '100%', fontFamily: 'sans-serif' }}>
           
+          {/* --- PRIMARY PERSON CARD --- */}
           <div style={primaryStyle}>
             {isDeceased && <DeceasedRibbon />}
             {label && <div style={{ fontSize: '0.65rem', color: '#7f8c8d', textTransform: 'uppercase', marginBottom: '6px', fontWeight: 'bold', letterSpacing: '0.5px' }}>{label}</div>}
             
             <div onClick={() => openProfile(id)} style={{ fontWeight: 'bold', color: '#2c3e50', cursor: 'pointer', marginBottom: '5px', position: 'relative', zIndex: 2 }}>{nodeDatum.name}</div>
-            {/* Primary Person Additions */}
-            {nodeDatum.attributes.postMaritalName && <div style={{ fontSize: '0.8rem', fontStyle: 'italic', color: '#555' }}>({nodeDatum.attributes.postMaritalName})</div>}
-            {nodeDatum.attributes.location && <div style={{ fontSize: '0.8rem', color: '#e67e22', marginBottom: '4px' }}>📍 {nodeDatum.attributes.location}</div>}
+            
+            {/* These use the PRIMARY variables */}
+            {postMaritalName && <div style={{ fontSize: '0.8rem', fontStyle: 'italic', color: '#555', marginBottom: '4px' }}>({postMaritalName})</div>}
+            {location && <div style={{ fontSize: '0.8rem', color: '#e67e22', marginBottom: '4px' }}>📍 {location}</div>}
+            
             {age !== '' && <div style={{ fontSize: '0.85rem', color: '#7f8c8d', marginBottom: '8px' }}>{isDeceased ? `Age at passing: ${age}` : `Age: ${age}`}</div>}
 
             <button onClick={() => { setCenterId(id); setViewMode('focus'); }} style={{ background: 'rgba(255,255,255,0.7)', color: '#333', border: '1px solid #bdc3c7', padding: '5px 8px', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer', width: '100%', fontWeight: 'bold', position: 'relative', zIndex: 2 }}>
@@ -180,6 +184,7 @@ function App() {
             </button>
           </div>
 
+          {/* --- SPOUSE CARD --- */}
           {spouseName && (
             <>
               <div style={{ width: '20px', height: '3px', background: '#bdc3c7', marginTop: '35px' }}></div>
@@ -188,9 +193,11 @@ function App() {
                 {spouseLabel && <div style={{ fontSize: '0.65rem', color: '#7f8c8d', textTransform: 'uppercase', marginBottom: '6px', fontWeight: 'bold', letterSpacing: '0.5px' }}>{spouseLabel}</div>}
 
                 <div onClick={() => openProfile(spouseId)} style={{ fontWeight: 'bold', color: '#2c3e50', cursor: 'pointer', marginBottom: '5px', position: 'relative', zIndex: 2 }}>{spouseName}</div>
-                {/* Primary Person Additions */}
-                {nodeDatum.attributes.postMaritalName && <div style={{ fontSize: '0.8rem', fontStyle: 'italic', color: '#555' }}>({nodeDatum.attributes.postMaritalName})</div>}
-                {nodeDatum.attributes.location && <div style={{ fontSize: '0.8rem', color: '#e67e22', marginBottom: '4px' }}>📍 {nodeDatum.attributes.location}</div>}
+                
+                {/* These use the SPOUSE variables */}
+                {spousePostMaritalName && <div style={{ fontSize: '0.8rem', fontStyle: 'italic', color: '#555', marginBottom: '4px' }}>({spousePostMaritalName})</div>}
+                {spouseLocation && <div style={{ fontSize: '0.8rem', color: '#e67e22', marginBottom: '4px' }}>📍 {spouseLocation}</div>}
+
                 {spouseAge !== '' && <div style={{ fontSize: '0.85rem', color: '#7f8c8d', marginBottom: '8px' }}>{spouseIsDeceased ? `Age at passing: ${spouseAge}` : `Age: ${spouseAge}`}</div>}
 
                 <button onClick={() => { setCenterId(spouseId); setViewMode('focus'); }} style={{ background: 'rgba(255,255,255,0.7)', color: '#333', border: '1px solid #bdc3c7', padding: '5px 8px', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer', width: '100%', fontWeight: 'bold', position: 'relative', zIndex: 2 }}>
@@ -273,3 +280,4 @@ function App() {
 
 
 export default App;
+
