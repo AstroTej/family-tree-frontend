@@ -51,12 +51,12 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
           spouseAge: spouse ? calculateAge(spouse.dateOfBirth, spouse.dateOfDeath) : '',
           isCenter: person._id === centerId, 
           label: '',
-          spouseLabel: ''
+          spouseLabel: '',
           // Add these to the attributes objects:
           location: person.location || '',
           postMaritalName: person.postMaritalName || '',
           spouseLocation: spouse ? spouse.location : '',
-          spousePostMaritalName: spouse ? spouse.postMaritalName : '',
+          spousePostMaritalName: spouse ? spouse.postMaritalName : ''
         },
         children: []
       };
@@ -93,12 +93,12 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
       spouseAge: centerSpouse ? calculateAge(centerSpouse.dateOfBirth, centerSpouse.dateOfDeath) : '',
       isCenter: true,
       label: '', 
-      spouseLabel: '' 
+      spouseLabel: '' ,
       // Add these to the attributes objects:
       location: person.location || '',
       postMaritalName: person.postMaritalName || '',
       spouseLocation: spouse ? spouse.location : '',
-      spousePostMaritalName: spouse ? spouse.postMaritalName : '',
+      spousePostMaritalName: spouse ? spouse.postMaritalName : ''
     },
     children: []
   };
@@ -125,12 +125,12 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
         
         isCenter: false,
         label: '',
-        spouseLabel: ''
+        spouseLabel: '',
         // Add these to the attributes objects:
         location: child.location || '',
         postMaritalName: child.postMaritalName || '',
         spouseLocation: childSpouse ? childSpouse.location : '',
-        spousePostMaritalName: childSpouse ? childSpouse.postMaritalName : '',
+        spousePostMaritalName: childSpouse ? childSpouse.postMaritalName : ''
       },
       children: [] 
     });
@@ -176,12 +176,12 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
         spouseAge: primarySpouse ? calculateAge(primarySpouse.dateOfBirth, primarySpouse.dateOfDeath) : '',
         isCenter: false,
         label: pLabel,
-        spouseLabel: sLabel 
+        spouseLabel: sLabel ,
         // Add these to the attributes objects:
         location: primaryParent.location || '',
         postMaritalName: primaryParent.postMaritalName || '',
         spouseLocation: primarySpouse ? primarySpouse.location : '',
-        spousePostMaritalName: primarySpouse ? primarySpouse.postMaritalName : '',
+        spousePostMaritalName: primarySpouse ? primarySpouse.postMaritalName : ''
       },
       children: [centerNode] 
     };
@@ -191,4 +191,5 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
   return centerNode;
 
 };
+
 
