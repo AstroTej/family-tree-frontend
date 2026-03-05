@@ -34,7 +34,12 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
     // We keep using FormData so your backend doesn't need to be rewritten
     const data = new FormData();
     Object.keys(formData).forEach(key => {
-      if (formData[key]) data.append(key, formData[key]);
+      if (formData[key]) {
+        data.append(key, formData[key]);
+      } else if (['spouse', 'father', 'mother'].includes(key)) {
+        // Force the frontend to send the empty string so the backend knows to clear the relationship!
+        data.append(key, '');
+      }
     });
 
     try {
@@ -213,3 +218,4 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
 };
 
 export default ProfileModal;
+
