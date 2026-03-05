@@ -170,7 +170,9 @@ function App() {
             {label && <div style={{ fontSize: '0.65rem', color: '#7f8c8d', textTransform: 'uppercase', marginBottom: '6px', fontWeight: 'bold', letterSpacing: '0.5px' }}>{label}</div>}
             
             <div onClick={() => openProfile(id)} style={{ fontWeight: 'bold', color: '#2c3e50', cursor: 'pointer', marginBottom: '5px', position: 'relative', zIndex: 2 }}>{nodeDatum.name}</div>
-            
+            {/* Primary Person Additions */}
+            {nodeDatum.attributes.postMaritalName && <div style={{ fontSize: '0.8rem', fontStyle: 'italic', color: '#555' }}>({nodeDatum.attributes.postMaritalName})</div>}
+            {nodeDatum.attributes.location && <div style={{ fontSize: '0.8rem', color: '#e67e22', marginBottom: '4px' }}>📍 {nodeDatum.attributes.location}</div>}
             {age !== '' && <div style={{ fontSize: '0.85rem', color: '#7f8c8d', marginBottom: '8px' }}>{isDeceased ? `Age at passing: ${age}` : `Age: ${age}`}</div>}
 
             <button onClick={() => { setCenterId(id); setViewMode('focus'); }} style={{ background: 'rgba(255,255,255,0.7)', color: '#333', border: '1px solid #bdc3c7', padding: '5px 8px', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer', width: '100%', fontWeight: 'bold', position: 'relative', zIndex: 2 }}>
@@ -186,7 +188,9 @@ function App() {
                 {spouseLabel && <div style={{ fontSize: '0.65rem', color: '#7f8c8d', textTransform: 'uppercase', marginBottom: '6px', fontWeight: 'bold', letterSpacing: '0.5px' }}>{spouseLabel}</div>}
 
                 <div onClick={() => openProfile(spouseId)} style={{ fontWeight: 'bold', color: '#2c3e50', cursor: 'pointer', marginBottom: '5px', position: 'relative', zIndex: 2 }}>{spouseName}</div>
-                
+                {/* Primary Person Additions */}
+                {nodeDatum.attributes.postMaritalName && <div style={{ fontSize: '0.8rem', fontStyle: 'italic', color: '#555' }}>({nodeDatum.attributes.postMaritalName})</div>}
+                {nodeDatum.attributes.location && <div style={{ fontSize: '0.8rem', color: '#e67e22', marginBottom: '4px' }}>📍 {nodeDatum.attributes.location}</div>}
                 {spouseAge !== '' && <div style={{ fontSize: '0.85rem', color: '#7f8c8d', marginBottom: '8px' }}>{spouseIsDeceased ? `Age at passing: ${spouseAge}` : `Age: ${spouseAge}`}</div>}
 
                 <button onClick={() => { setCenterId(spouseId); setViewMode('focus'); }} style={{ background: 'rgba(255,255,255,0.7)', color: '#333', border: '1px solid #bdc3c7', padding: '5px 8px', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer', width: '100%', fontWeight: 'bold', position: 'relative', zIndex: 2 }}>
@@ -202,23 +206,29 @@ function App() {
 
   return (
     <div className="app-container">
-      <header className="top-bar">
-        <h1>Family Tree Hub</h1>
+     <header className="top-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        {/* LEFT: Title and Counter */}
+        <div>
+          <h1 style={{ margin: 0, color: '#2c3e50' }}>Family Tree Hub</h1>
+          <div style={{ fontSize: '0.85rem', color: '#7f8c8d', marginTop: '4px', fontWeight: 'bold' }}>
+            Total Members: {allMembers.length}
+          </div>
+        </div>
         
+        {/* CENTER: View Toggles */}
         <div style={{ display: 'flex', gap: '10px', background: '#ecf0f1', padding: '5px', borderRadius: '8px' }}>
           <button onClick={() => setViewMode('focus')} style={{ padding: '8px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', background: viewMode === 'focus' ? '#3498db' : 'transparent', color: viewMode === 'focus' ? 'white' : '#7f8c8d' }}>Focus View</button>
           <button onClick={() => setViewMode('full')} style={{ padding: '8px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', background: viewMode === 'full' ? '#3498db' : 'transparent', color: viewMode === 'full' ? 'white' : '#7f8c8d' }}>Full Tree View</button>
         </div>
 
+        {/* RIGHT: Search, Add Member, and Logout */}
         <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
           <input type="text" placeholder="Search relatives..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="search-filter" />
           
-          {/* SECURE: Only render the Add button if they are an admin */}
           {userRole === 'edit' && (
             <button onClick={() => setSelectedPerson('NEW')} style={{ padding: '0.6rem 1.2rem', background: '#3498db', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>+ Add Member</button>
           )}
 
-          {/* Optional: Add a subtle logout button to let you switch accounts to test it */}
           <button 
             onClick={() => { setIsAuthenticated(false); localStorage.clear(); window.location.reload(); }} 
             style={{ padding: '0.6rem', background: 'transparent', color: '#7f8c8d', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}>
@@ -260,5 +270,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;
