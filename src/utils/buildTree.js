@@ -15,22 +15,17 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
 
   const getSpouse = (person) => person?.spouse ? flatData.find(p => p._id === (person.spouse._id || person.spouse)) : null;
 
-  // --- NEW: Sibling Sorting Logic ---
   const sortChronologically = (a, b) => {
-    // If both have birth dates, oldest goes left (smaller date value)
-    if (a.dateOfBirth && b.dateOfBirth) {
-      return new Date(a.dateOfBirth) - new Date(b.dateOfBirth);
-    }
-    // If only one has a birth date, they get priority to the left
+    if (a.dateOfBirth && b.dateOfBirth) return new Date(a.dateOfBirth) - new Date(b.dateOfBirth);
     if (a.dateOfBirth) return -1;
     if (b.dateOfBirth) return 1;
-    // If neither has a birth date, leave them as they are
     return 0;
   };
 
   let centerPerson = centerId ? flatData.find(p => p._id === centerId) : flatData[0];
   if (!centerPerson) return null;
 
+  // --- 1. FULL TREE VIEW ---
   if (viewMode === 'full') {
     const buildNode = (person, visited = new Set()) => {
       if (visited.has(person._id)) return null; 
@@ -52,7 +47,6 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
           isCenter: person._id === centerId, 
           label: '',
           spouseLabel: '',
-          // Add these to the attributes objects:
           location: person.location || '',
           postMaritalName: person.postMaritalName || '',
           spouseLocation: spouse ? spouse.location : '',
@@ -61,7 +55,6 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
         children: []
       };
 
-      // Filter children, then apply our chronological sort!
       const children = flatData
         .filter(p => (p.father && (p.father._id === person._id || p.father === person._id)) || (p.mother && (p.mother._id === person._id || p.mother === person._id)))
         .sort(sortChronologically);
@@ -77,8 +70,10 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
     return buildNode(centerPerson);
   }
 
+  // --- FOCUS VIEW ---
   const centerSpouse = getSpouse(centerPerson);
 
+  // 2. CENTER NODE
   const centerNode = {
     name: `${centerPerson.firstName} ${centerPerson.lastName}`,
     attributes: {
@@ -93,8 +88,7 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
       spouseAge: centerSpouse ? calculateAge(centerSpouse.dateOfBirth, centerSpouse.dateOfDeath) : '',
       isCenter: true,
       label: '', 
-      spouseLabel: '' ,
-      // Add these to the attributes objects:
+      spouseLabel: '',
       location: centerPerson.location || '',
       postMaritalName: centerPerson.postMaritalName || '',
       spouseLocation: centerSpouse ? centerSpouse.location : '',
@@ -103,11 +97,11 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
     children: []
   };
 
-  // Filter children, then apply our chronological sort!
   const children = flatData
     .filter(p => (p.father && (p.father._id === centerPerson._id || p.father === centerPerson._id)) || (p.mother && (p.mother._id === centerPerson._id || p.mother === centerPerson._id)))
     .sort(sortChronologically);
 
+  // 3. CHILDREN NODES
   children.forEach(child => {
     const childSpouse = getSpouse(child);
     centerNode.children.push({
@@ -122,11 +116,9 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
         spouseGender: childSpouse ? childSpouse.gender : '',
         spouseIsDeceased: childSpouse ? !!childSpouse.dateOfDeath : false,
         spouseAge: childSpouse ? calculateAge(childSpouse.dateOfBirth, childSpouse.dateOfDeath) : '',
-        
         isCenter: false,
         label: '',
         spouseLabel: '',
-        // Add these to the attributes objects:
         location: child.location || '',
         postMaritalName: child.postMaritalName || '',
         spouseLocation: childSpouse ? childSpouse.location : '',
@@ -162,6 +154,7 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
         }
     }
 
+    // 4. PARENTS NODE
     const parentsNode = {
       name: `${primaryParent.firstName} ${primaryParent.lastName}`,
       attributes: {
@@ -176,8 +169,7 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
         spouseAge: primarySpouse ? calculateAge(primarySpouse.dateOfBirth, primarySpouse.dateOfDeath) : '',
         isCenter: false,
         label: pLabel,
-        spouseLabel: sLabel ,
-        // Add these to the attributes objects:
+        spouseLabel: sLabel,
         location: primaryParent.location || '',
         postMaritalName: primaryParent.postMaritalName || '',
         spouseLocation: primarySpouse ? primarySpouse.location : '',
@@ -189,8 +181,4 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
   }
 
   return centerNode;
-
 };
-
-
-
