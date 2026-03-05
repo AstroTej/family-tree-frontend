@@ -49,6 +49,11 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
           spouseGender: spouse ? spouse.gender : '',
           spouseIsDeceased: spouse ? !!spouse.dateOfDeath : false,
           spouseAge: spouse ? calculateAge(spouse.dateOfBirth, spouse.dateOfDeath) : '',
+          // Add these to the attributes objects:
+          location: person.location || '',
+          postMaritalName: person.postMaritalName || '',
+          spouseLocation: spouse ? spouse.location : '',
+          spousePostMaritalName: spouse ? spouse.postMaritalName : '',
           isCenter: person._id === centerId, 
           label: '',
           spouseLabel: ''
@@ -86,6 +91,11 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
       spouseGender: centerSpouse ? centerSpouse.gender : '',
       spouseIsDeceased: centerSpouse ? !!centerSpouse.dateOfDeath : false,
       spouseAge: centerSpouse ? calculateAge(centerSpouse.dateOfBirth, centerSpouse.dateOfDeath) : '',
+      // Add these to the attributes objects:
+      location: person.location || '',
+      postMaritalName: person.postMaritalName || '',
+      spouseLocation: spouse ? spouse.location : '',
+      spousePostMaritalName: spouse ? spouse.postMaritalName : '',
       isCenter: true,
       label: '', 
       spouseLabel: '' 
@@ -112,6 +122,11 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
         spouseGender: childSpouse ? childSpouse.gender : '',
         spouseIsDeceased: childSpouse ? !!childSpouse.dateOfDeath : false,
         spouseAge: childSpouse ? calculateAge(childSpouse.dateOfBirth, childSpouse.dateOfDeath) : '',
+        // Add these to the attributes objects:
+        location: person.location || '',
+        postMaritalName: person.postMaritalName || '',
+        spouseLocation: spouse ? spouse.location : '',
+        spousePostMaritalName: spouse ? spouse.postMaritalName : '',
         isCenter: false,
         label: '',
         spouseLabel: ''
@@ -158,6 +173,11 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
         spouseGender: primarySpouse ? primarySpouse.gender : '',
         spouseIsDeceased: primarySpouse ? !!primarySpouse.dateOfDeath : false,
         spouseAge: primarySpouse ? calculateAge(primarySpouse.dateOfBirth, primarySpouse.dateOfDeath) : '',
+        // Add these to the attributes objects:
+        location: person.location || '',
+        postMaritalName: person.postMaritalName || '',
+        spouseLocation: spouse ? spouse.location : '',
+        spousePostMaritalName: spouse ? spouse.postMaritalName : '',
         isCenter: false,
         label: pLabel,
         spouseLabel: sLabel 
@@ -168,4 +188,5 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
   }
 
   return centerNode;
+
 };
