@@ -22,8 +22,6 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
     mother: extractId(person?.mother),
     spouse: extractId(person?.spouse),
   });
-  
-  const [imageFile, setImageFile] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -32,12 +30,12 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = new FormData();
     
+    // We keep using FormData so your backend doesn't need to be rewritten
+    const data = new FormData();
     Object.keys(formData).forEach(key => {
       if (formData[key]) data.append(key, formData[key]);
     });
-    if (imageFile) data.append('image', imageFile);
 
     try {
       const authToken = axios.defaults.headers.common['x-family-password'];
@@ -54,7 +52,6 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
       refreshData(); 
       onClose();     
     } catch (error) {
-      // DUPLICATE HANDLER
       if (error.response && error.response.status === 409) {
         alert("⚠️ This person already exists! A family member with this First Name, Last Name, and Father is already in the database.");
       } else {
@@ -63,7 +60,6 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
     }
   };
 
-  // DELETE HANDLER (Double Confirmation)
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this person?")) {
       if (window.confirm("FINAL WARNING: This will permanently remove them and unlink their family connections. Proceed?")) {
@@ -127,7 +123,6 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
               </select>
             </div>
 
-            {/* DYNAMIC FIELD: Only shows if Female */}
             {formData.gender === 'Female' && (
               <div className="form-group">
                 <label>New Name (Post-Marital):</label>
@@ -173,6 +168,11 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
           </form>
         ) : (
           <div className="profile-view">
+            <img 
+              src="/default-avatar.png" 
+              alt="Profile" 
+              className="profile-image"
+            />
             <h2>
               {person.firstName} {person.lastName} 
               {person.postMaritalName && <span style={{ fontSize: '1rem', color: '#7f8c8d' }}> (Now: {person.postMaritalName})</span>}
@@ -186,7 +186,6 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
               
               <hr style={{ border: '0', borderTop: '1px solid #ddd', margin: '10px 0' }}/>
               
-              {/* DD/MM/YYYY FORMATTING APPLIED HERE */}
               <p><strong>DOB:</strong> {person.dateOfBirth ? new Date(person.dateOfBirth).toLocaleDateString('en-GB') : 'N/A'}</p>
               {person.dateOfDeath && <p><strong>Passed Away:</strong> {new Date(person.dateOfDeath).toLocaleDateString('en-GB')}</p>}
               {person.location && <p><strong>Location:</strong> {person.location}</p>}
@@ -202,8 +201,8 @@ const ProfileModal = ({ person, onClose, refreshData, allMembers, userRole }) =>
             
             {userRole === 'edit' && (
               <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
-                <button className="edit-btn" style={{ flex: 2 }} onClick={() => setIsEditing(true)}>Edit Profile</button>
-                <button className="delete-btn" style={{ flex: 1, background: '#e74c3c', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }} onClick={handleDelete}>Delete</button>
+                <button className="edit-btn" style={{ flex: 2, margin: 0 }} onClick={() => setIsEditing(true)}>Edit Profile</button>
+                <button className="delete-btn" style={{ flex: 1, background: '#e74c3c', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', margin: 0 }} onClick={handleDelete}>Delete</button>
               </div>
             )}
           </div>
