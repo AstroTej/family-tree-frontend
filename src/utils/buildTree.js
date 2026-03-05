@@ -95,10 +95,10 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
       label: '', 
       spouseLabel: '' ,
       // Add these to the attributes objects:
-      location: person.location || '',
-      postMaritalName: person.postMaritalName || '',
-      spouseLocation: spouse ? spouse.location : '',
-      spousePostMaritalName: spouse ? spouse.postMaritalName : ''
+      location: centerPerson.location || '',
+      postMaritalName: centerPerson.postMaritalName || '',
+      spouseLocation: centerSpouse ? centerSpouse.location : '',
+      spousePostMaritalName: centerSpouse ? centerSpouse.postMaritalName : ''
     },
     children: []
   };
@@ -191,5 +191,6 @@ export const buildTree = (flatData, centerId = null, viewMode = 'focus') => {
   return centerNode;
 
 };
+
 
 
